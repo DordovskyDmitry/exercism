@@ -1,0 +1,55 @@
+package pythagorean
+
+import "math"
+
+const testVersion = 1
+
+type Triplet [3]int
+
+func Range(min, max int) (result []Triplet) {
+	for m := min; m < max-1; m++ {
+		for n := m + 1; n < max; n++ {
+			squareK := m*m + n*n
+			k := int(math.Sqrt(float64(squareK)))
+
+			if k*k == squareK {
+				result = append(result, Triplet{m, n, k})
+			}
+		}
+	}
+	return
+
+}
+
+func Sum(p int) (result []Triplet) {
+	if p%2 == 1 {
+		return
+	}
+	cache := make(map[Triplet]bool)
+	for m := int(math.Sqrt(float64(p / 2))); m > 1; m-- {
+		for n := 1; n < m; n++ {
+			perimeter := 2 * m * (m + n)
+			if p%perimeter == 0 {
+
+				triplet := buildTriplet(m, n, p/perimeter)
+				if !cache[triplet] {
+					cache[triplet] = true
+					result = append(result, triplet)
+				}
+			}
+
+		}
+	}
+	return
+}
+
+func buildTriplet(m, n, k int) Triplet {
+	a := m*m + n*n
+	b := 2 * m * n
+	c := m*m - n*n
+
+	if c > b {
+		b,c = c,b
+	}
+	return Triplet{k * c, k * b, k * a}
+}
