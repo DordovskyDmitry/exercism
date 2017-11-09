@@ -24,35 +24,25 @@ func Build(records []Record) (*Node, error) {
 	if length == 0 {
 		return nil, nil
 	}
-	err := Mismatch{}
+	// The idea was peeped rickh94
+	sort.SliceStable(records, func(i, j int) bool {
+		return records[i].ID < records[j].ID
+	})
 
 	dependencies := make([][]int, length)
-	usedRecord := make([]bool, length)
 	for _, record := range records {
 		id := record.ID
 		parent := record.Parent
 		if id >= length || parent >= length {
-			return nil, err
+			return nil, Mismatch{}
 		}
-		if usedRecord[id] == true {
-			return nil, err
-		}
-		usedRecord[id] = true
 		if id == 0 && parent == 0 {
 			continue
 		}
 		if parent >= id && parent != 0 {
-			return nil, err
+			return nil, Mismatch{}
 		}
 		dependencies[parent] = append(dependencies[parent], id)
-	}
-	for _, used := range usedRecord {
-		if used == false {
-			return nil, err
-		}
-	}
-	for _, v := range dependencies {
-		sort.Ints(v)
 	}
 
 	root := &Node{ID: 0}
