@@ -1,31 +1,38 @@
 package atbash
 
-import (
-	"regexp"
-	"strings"
-	"unicode"
-)
+import "strings"
+
+var mapLetters map[rune]rune = map[rune]rune{}
+
+func init() {
+	for r := 'a'; r <= 'z'; r++ {
+		mapLetters[r] = 'z' + 'a' - r
+	}
+
+	for r := 'A'; r <= 'Z'; r++ {
+		mapLetters[r] = 'z' + 'A' - r
+	}
+
+	for r := '0'; r <= '9'; r++ {
+		mapLetters[r] = r
+	}
+}
 
 func Atbash(in string) string {
-	reg, err := regexp.Compile("[^a-z0-9]+")
-	if err != nil {
-		return ""
-	}
-	sanitizedIn := reg.ReplaceAllString(strings.ToLower(in), "")
-
-	s := make([]rune, 0)
-	pos := 'a' + 'z'
-	last := len(sanitizedIn) - 1
-	for i, r := range sanitizedIn {
-		if unicode.IsDigit(r) {
-			s = append(s, r)
-		} else {
-			s = append(s, pos-r)
+	in = strings.Map(func(r rune) rune {
+		if v, ok := mapLetters[r]; ok {
+			return v
 		}
-
-		if i%5 == 4 && i != last {
-			s = append(s, ' ')
-		}
+		return -1
+	}, in)
+	strs := []string{}
+	i := 0
+	for i < len(in)-4 {
+		strs = append(strs, in[i:i+5])
+		i += 5
 	}
-	return string(s)
+	if i < len(in) {
+		strs = append(strs, in[i:len(in)])
+	}
+	return strings.Join(strs, " ")
 }
