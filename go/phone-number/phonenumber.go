@@ -6,7 +6,7 @@ import (
 )
 
 func Number(input string) (string, error) {
-	str := []rune{}
+	str := make([]rune, 0, 11)
 	for _, v := range input {
 		if unicode.IsDigit(v) {
 			str = append(str, v)
