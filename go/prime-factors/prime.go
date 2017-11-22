@@ -8,11 +8,14 @@ func factors(n int64, start int64, divisors []int64) []int64 {
 	if n == 1 {
 		return divisors
 	}
+
 	i := start
 	for i*i <= n {
 		if n%i == 0 {
-			divisors = append(divisors, i)
-			return factors(n/i, i, divisors)
+			return factors(n/i, i, append(divisors, i))
+		}
+		if i > 2 {
+			i++
 		}
 		i++
 	}
