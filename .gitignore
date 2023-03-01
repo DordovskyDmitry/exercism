@@ -1,1 +1,8 @@
 .idea
+.devcontainer
+
+.DS_Store
+
+.exercism
+.lein*
+target/
